@@ -13,9 +13,10 @@ def on_connect(client, userdata, flags, rc):
 
 
 if __name__ == '__main__':
+    
     #get IP address
-    ip_address=0 
-    """your code here"""
+    ip_address=socket.gethostbyname("localhost")
+
     #create a client object
     client = mqtt.Client()
     
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     client. If the connection request is successful, the callback attached to
     `client.on_connect` will be called."""
 
+    # Connect to the broker
     client.connect(host="eclipse.usc.edu", port=11000, keepalive=60)
 
     """ask paho-mqtt to spawn a separate thread to handle
@@ -39,13 +41,30 @@ if __name__ == '__main__':
     client.loop_start()
     time.sleep(1)
 
+    # Continue publishing ip address, date, and time to the broker
     while True:
+        
         #replace user with your USC username in all subscriptions
-        client.publish("user/ipinfo", f"{ip_address}")
+        client.publish("jpogue/ipinfo", f"{ip_address}")
         print("Publishing ip address")
         time.sleep(4)
 
         #get date and time 
-        """your code here"""
+        dtObject = datetime.now()
+
         #publish date and time in their own topics
-        """your code here"""
+        print("Publishing date")
+        client.publish("jpogue/date", f"{dtObject.date()}")
+
+        time.sleep(4)
+
+        print("Publishing time")
+        client.publish("jpogue/time", f"{dtObject.time()}")
+
+        time.sleep(4)
+
+        #publish something random on the default topic
+        print("Publishing something random")
+        client.publish("jpogue/random", f"The quick brown fox jumps over the lazy dog.")
+
+        time.sleep(4)
